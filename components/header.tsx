@@ -5,9 +5,22 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLocale } from "@/lib/locale-context"
 import { t } from "@/lib/i18n"
+import { useState, useEffect } from "react"
 
 export function Header() {
   const { locale, setLocale } = useLocale()
+  const [currentTime, setCurrentTime] = useState("")
+
+  useEffect(() => {
+    const updateTime = () => {
+      setCurrentTime(new Date().toLocaleTimeString(locale === "ja" ? "ja-JP" : "en-US"))
+    }
+
+    updateTime()
+    const interval = setInterval(updateTime, 1000)
+
+    return () => clearInterval(interval)
+  }, [locale])
 
   return (
     <header className="border-b border-border bg-card">
@@ -29,7 +42,7 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           <div className="text-sm text-muted-foreground font-mono">
-            {new Date().toLocaleTimeString(locale === "ja" ? "ja-JP" : "en-US")}
+            {currentTime}
           </div>
 
           <Button
